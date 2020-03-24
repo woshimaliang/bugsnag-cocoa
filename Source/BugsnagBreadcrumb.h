@@ -73,12 +73,33 @@ typedef NS_ENUM(NSUInteger, BSGBreadcrumbType) {
  */
 typedef NS_OPTIONS(NSUInteger, BSGEnabledBreadcrumbType) {
     BSGEnabledBreadcrumbTypeNone       = 0,
+    /**
+     * A change in application or view state, such as launch or memory warning
+     */
     BSGEnabledBreadcrumbTypeState      = 1 << 1,
+    /**
+     * A user event, such as authentication or control events
+     */
     BSGEnabledBreadcrumbTypeUser       = 1 << 2,
+    /**
+     * A log message
+     */
     BSGEnabledBreadcrumbTypeLog        = 1 << 3,
+    /**
+     * A navigation action, such as a window opening or closing; pushing a view controller; or dismissing an alert
+     */
     BSGEnabledBreadcrumbTypeNavigation = 1 << 4,
+    /**
+     * A network request
+     */
     BSGEnabledBreadcrumbTypeRequest    = 1 << 5,
+    /**
+     * A background process, such performing a database query
+     */
     BSGEnabledBreadcrumbTypeProcess    = 1 << 6,
+    /**
+     * An error was delivered to the Error Reporting API (internal use only)
+     */
     BSGEnabledBreadcrumbTypeError      = 1 << 7,
     BSGEnabledBreadcrumbTypeAll = BSGEnabledBreadcrumbTypeState
         | BSGEnabledBreadcrumbTypeUser

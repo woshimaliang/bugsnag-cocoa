@@ -353,55 +353,72 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
                     apiClient:self.errorReportApiClient
                       onCrash:&BSSerializeDataCrashHandler];
     [self computeDidCrashLastLaunch];
-    [self setupConnectivityListener];
-
+    
+    // Automatic breadcrumbs should only be collected if enabledBreadcrumbTypes
+    // is nil, or contains the specific type of automatic breadcrumb.
+        
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [self watchLifecycleEvents:center];
-
+    
+    // Navigation breadcrumbs
+    if (!configuration.enabledBreadcrumbTypes
+        || configuration.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeNavigation)
+    {
+        
+        [self watchLifecycleEvents:center];
+    }
+    
+    // State breadcrumbs
+    if (!configuration.enabledBreadcrumbTypes
+        || configuration.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeState)
+    {
+        [self setupConnectivityListener];
+        
 #if TARGET_OS_TV
-    [self addTerminationObserver:UIApplicationWillTerminateNotification];
+        [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    [center addObserver:self
-               selector:@selector(batteryChanged:)
-                   name:UIDeviceBatteryStateDidChangeNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(batteryChanged:)
+                       name:UIDeviceBatteryStateDidChangeNotification
+                     object:nil];
 
-    [center addObserver:self
-               selector:@selector(batteryChanged:)
-                   name:UIDeviceBatteryLevelDidChangeNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(batteryChanged:)
+                       name:UIDeviceBatteryLevelDidChangeNotification
+                     object:nil];
 
-    [center addObserver:self
-               selector:@selector(orientationChanged:)
-                   name:UIDeviceOrientationDidChangeNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(orientationChanged:)
+                       name:UIDeviceOrientationDidChangeNotification
+                     object:nil];
 
-    [center addObserver:self
-               selector:@selector(lowMemoryWarning:)
-                   name:UIApplicationDidReceiveMemoryWarningNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(lowMemoryWarning:)
+                       name:UIApplicationDidReceiveMemoryWarningNotification
+                     object:nil];
 
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
-    [self batteryChanged:nil];
-    [self orientationChanged:nil];
-    [self addTerminationObserver:UIApplicationWillTerminateNotification];
+        [self batteryChanged:nil];
+        [self orientationChanged:nil];
+        [self addTerminationObserver:UIApplicationWillTerminateNotification];
 
 #elif TARGET_OS_MAC
-    [center addObserver:self
-               selector:@selector(willEnterForeground:)
-                   name:NSApplicationDidBecomeActiveNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(willEnterForeground:)
+                       name:NSApplicationDidBecomeActiveNotification
+                     object:nil];
 
-    [center addObserver:self
-               selector:@selector(willEnterBackground:)
-                   name:NSApplicationDidResignActiveNotification
-                 object:nil];
+        [center addObserver:self
+                   selector:@selector(willEnterBackground:)
+                       name:NSApplicationDidResignActiveNotification
+                     object:nil];
 
-    [self addTerminationObserver:NSApplicationWillTerminateNotification];
+        [self addTerminationObserver:NSApplicationWillTerminateNotification];
 #endif
+
+    }
 
     _started = YES;
     // autoDetectErrors disables all unhandled event reporting
@@ -530,6 +547,10 @@ NSString *const BSGBreadcrumbLoadedMessage = @"Bugsnag loaded";
     [self.errorReportApiClient flushPendingData];
 }
 
+/**
+ * Record changes in connectivity as breadcrumbs.
+ * Monitors the Bugsnag notify endpoint.
+ */
 - (void)setupConnectivityListener {
     NSURL *url = self.configuration.notifyURL;
 
