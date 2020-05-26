@@ -18,7 +18,7 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-        command: --tags "not @skip" # Remove this before merging V6
+        command: ['--tags', '"not @skip"'] # Remove this before merging V6
     env:
       DEVICE_TYPE: IOS_13
     concurrency: 10
@@ -36,7 +36,7 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-        command: --tags "not @skip" # Remove this before merging V6
+        command: ['--tags', '"not @skip"'] # Remove this before merging V6
     env:
       DEVICE_TYPE: IOS_12
     concurrency: 10
@@ -51,7 +51,7 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-        command: --tags "not @skip" # Remove this before merging V6
+        command: ['--tags', '"not @skip"'] # Remove this before merging V6
     env:
       DEVICE_TYPE: IOS_11
     concurrency: 10
@@ -66,7 +66,7 @@ steps:
         download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
       docker-compose#v3.3.0:
         run: cocoa-maze-runner
-        command: --tags "not @skip" # Remove this before merging V6
+        command: ['--tags', '"not @skip"'] # Remove this before merging V6
     env:
       DEVICE_TYPE: IOS_10
     concurrency: 10
