@@ -183,10 +183,13 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 }
 
 /**
- * Check if the API Key is missing, i.e. it's nil, not a string or is empty
+ * Check if the API Key is missing, i.e. it's nil, not a string or is empty.
  *
  * This is distinct from 'isValidApiKey' to allow throwing an exception in this case, but not
- * if the API Key is in the wrong format
+ * if the API Key is in the wrong format.
+ *
+ * @param apiKey The API key.
+ * @returns A boolean representing whether the API key is nil, of the wrong type or is an empty string
  */
 + (BOOL)isApiKeyMissing:(NSString *)apiKey {
     return apiKey == nil || ![apiKey isKindOfClass:[NSString class]] || [apiKey length] == 0;
